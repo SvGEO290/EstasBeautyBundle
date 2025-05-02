@@ -97,4 +97,76 @@ stepContainers.forEach(container => {
             video.currentTime = 0;
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for ESTAS brand link
+    const estasBrand = document.querySelector('.nav-brand a');
+    if (estasBrand) {
+        estasBrand.addEventListener('click', function(e) {
+            e.preventDefault();
+            const heroSection = document.querySelector('#home');
+            if (heroSection) {
+                heroSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    // Optimize video loading
+    const videoContainers = document.querySelectorAll('.media-container');
+    
+    videoContainers.forEach(container => {
+        const video = container.querySelector('video');
+        const image = container.querySelector('img');
+        
+        // Only load video when container is in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    video.load();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        observer.observe(container);
+        
+        // Optimize hover effect
+        container.addEventListener('mouseenter', () => {
+            if (video.readyState >= 2) { // Check if video is loaded enough to play
+                image.style.opacity = '0';
+                video.style.opacity = '1';
+                video.play();
+            }
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            image.style.opacity = '1';
+            video.style.opacity = '0';
+            video.pause();
+        });
+    });
+
+    // Optimize mobile menu
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+    }
+
+    // Optimize scroll performance
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        if (!scrollTimeout) {
+            scrollTimeout = setTimeout(() => {
+                scrollTimeout = null;
+                // Add any scroll-based animations here
+            }, 100);
+        }
+    }, { passive: true });
 }); 
